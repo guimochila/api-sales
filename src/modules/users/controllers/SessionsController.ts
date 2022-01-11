@@ -6,7 +6,7 @@ class SessionsController {
     const { email, password } = req.body
     const createSession = new CreateSessionService()
 
-    const { user } = await createSession.execute({ email, password })
+    const user = await createSession.execute({ email, password })
 
     return res.json(user)
   }
