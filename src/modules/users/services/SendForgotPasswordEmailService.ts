@@ -1,7 +1,9 @@
 import AppError from '@shared/errors/AppError'
+import path from 'path'
 import { getCustomRepository } from 'typeorm'
 import UsersRepository from '../typeorm/repositories/UsersRepository'
 import UserTokensRepository from '../typeorm/repositories/UserTokensRepository'
+import MailtrapService from './MailTrapService'
 
 interface IRequest {
   email: string
@@ -18,9 +20,28 @@ class SendForgotPasswordEmailService {
       throw new AppError('Email not found.')
     }
 
-    const token = await userTokenRepository.generate(user.id)
+    const { token } = await userTokenRepository.generate(user.id)
+    const forgotPasswordTemplate = path.resolve(
+      __dirname,
+      '..',
+      'views',
+      'forgotPassword.hbs',
+    )
 
-    console.log(token)
+    await MailtrapService.sendEmail({
+      to: {
+        name: user.name,
+        email: user.email,
+      },
+      subject: '[API Sales] - Password Recover',
+      templateData: {
+        file: forgotPasswordTemplate,
+        variables: {
+          name: user.name,
+          link: `http://localhost:3000/reset_password?token=${token}`,
+        },
+      },
+    })
   }
 }
 
