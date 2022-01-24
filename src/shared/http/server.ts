@@ -19,6 +19,10 @@ app.use(routes)
 
 app.use(errors())
 app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
+  if (process.env.NODE_ENV !== 'production' && !(error instanceof AppError)) {
+    console.log(error)
+  }
+
   if (error instanceof AppError) {
     return res.status(error.statusCode).json({
       status: 'error',
