@@ -1,5 +1,5 @@
 import { getCustomRepository } from 'typeorm'
-import { ProductRepository } from '../typeorm/repositories/ProductsRepository'
+import ProductRepository from '../typeorm/repositories/ProductsRepository'
 import Product from '../typeorm/entities/Product'
 
 class ListProductService {
