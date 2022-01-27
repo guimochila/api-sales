@@ -9,11 +9,13 @@ import routes from './routes'
 import AppError from '@shared/errors/AppError'
 import '@shared/typeorm'
 import uploadConfig from '@config/upload'
+import rateLimiter from './middlewares/rateLimiter'
 
 const app = express()
 
 app.use(cors())
 app.use(express.json())
+app.use(rateLimiter)
 app.use(pagination)
 app.use('/static', express.static(uploadConfig.directory))
 app.use(routes)
