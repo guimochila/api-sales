@@ -1,9 +1,7 @@
 import AppError from '@shared/errors/AppError'
-import fs from 'fs'
-import path from 'path'
 import { getCustomRepository } from 'typeorm'
 import UsersRepository from '../typeorm/repositories/UsersRepository'
-import uploadConfig from '@config/upload'
+import storageProvider from '@shared/providers/StorageProvider'
 
 interface IRequest {
   user_id: string
@@ -13,6 +11,7 @@ interface IRequest {
 class UpdateUserAvatarService {
   public async execute({ user_id, avatarFilename }: IRequest) {
     const usersRepository = getCustomRepository(UsersRepository)
+
     const user = await usersRepository.findById(user_id)
 
     if (!user) {
@@ -20,14 +19,12 @@ class UpdateUserAvatarService {
     }
 
     if (user.avatar) {
-      const userAvatarFilePath = path.join(uploadConfig.directory, user.avatar)
-      const isUserAvatarFileExists = await fs.promises.stat(userAvatarFilePath)
-
-      if (isUserAvatarFileExists) {
-        await fs.promises.unlink(userAvatarFilePath)
-      }
+      await storageProvider.delete(user.avatar)
     }
-    user.avatar = avatarFilename
+
+    const filename = await storageProvider.save(avatarFilename)
+
+    user.avatar = filename
     await usersRepository.save(user)
 
     return user
