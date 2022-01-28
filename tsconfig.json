@@ -23,5 +23,5 @@
     },
     "typeRoots": ["@types", "./node_modules/@types"]
   },
-  "exclude": ["./ormconfig.js"]
+  "exclude": ["./ormconfig.js", "./babel.config.js", "./dist"]
 }
