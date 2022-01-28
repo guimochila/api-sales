@@ -1,9 +1,9 @@
-import AppError from '@shared/errors/AppError'
 import path from 'path'
 import { getCustomRepository } from 'typeorm'
 import UsersRepository from '../typeorm/repositories/UsersRepository'
 import UserTokensRepository from '../typeorm/repositories/UserTokensRepository'
-import MailtrapService from './MailTrapService'
+import AppError from '@shared/errors/AppError'
+import MailtrapService from '@shared/mail/MailTrapService'
 
 interface IRequest {
   email: string
