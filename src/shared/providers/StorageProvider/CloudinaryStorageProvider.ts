@@ -5,7 +5,7 @@ import {
   UploadApiOptions,
   UploadApiResponse,
 } from 'cloudinary'
-import uploadConfig from '@config/upload'
+import { uploadConfig } from '@config/upload'
 import { IStoreEngine } from './strategies'
 
 function upload(

@@ -8,7 +8,7 @@ import { pagination } from 'typeorm-pagination'
 import routes from './routes'
 import AppError from '@shared/errors/AppError'
 import '@shared/typeorm'
-import uploadConfig from '@config/upload'
+import { uploadConfig } from '@config/upload'
 import rateLimiter from './middlewares/rateLimiter'
 
 const app = express()

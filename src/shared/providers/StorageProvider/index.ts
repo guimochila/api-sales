@@ -1,4 +1,4 @@
-import uploadConfig from '@config/upload'
+import { uploadConfig } from '@config/upload'
 import CloudinaryStorageProvider from './CloudinaryStorageProvider'
 import DiskStorageProvider from './DiskStorageProvider'
 import { IStoreEngine, TStrategiesAvailable } from './strategies'

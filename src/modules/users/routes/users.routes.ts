@@ -3,7 +3,7 @@ import { celebrate, Segments } from 'celebrate'
 import Joi from 'joi'
 import multer from 'multer'
 import isAuthenticated from '@shared/http/middlewares/isAuthenticated'
-import uploadConfig from '@config/upload'
+import { uploadConfig } from '@config/upload'
 import UsersController from '../controllers/UsersController'
 import UserAvatarController from '../controllers/UserAvatarController'
 

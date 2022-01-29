@@ -19,7 +19,7 @@ interface IUploadConfig {
 const uploadFolder = path.resolve(__dirname, '..', '..', 'uploads')
 const tmpFolder = path.resolve(__dirname, '..', '..', '.temp')
 
-export default {
+const uploadConfig = {
   driver: process.env.STORAGE_DRIVER,
   directory: uploadFolder,
   tmpFolder,
@@ -45,3 +45,5 @@ export default {
     cloudName: process.env.CLOUDINARY_NAME,
   },
 } as IUploadConfig
+
+export { uploadConfig }
