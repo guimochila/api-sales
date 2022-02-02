@@ -1,33 +1,33 @@
 import AppError from '@shared/errors/AppError'
-import { hash } from 'bcryptjs'
-import { getCustomRepository } from 'typeorm'
+import { inject, injectable } from 'tsyringe'
 import User from '../infra/typeorm/entities/User'
-import UsersRepository from '../infra/typeorm/repositories/UsersRepository'
+import { IHashProvider } from '@shared/providers/HashProvider/models/IHashProvider'
+import { IUsersRepository } from '../domain/repositories/IUsersRepository'
+import { ICreateUser } from '../domain/models/ICreateUser'
 
-interface IRequest {
-  email: string
-  password: string
-  name: string
-}
-
+@injectable()
 class CreateUserService {
-  public async execute({ email, password, name }: IRequest): Promise<User> {
-    const usersRepository = getCustomRepository(UsersRepository)
-    const isEmailExists = await usersRepository.findByEmail(email)
+  constructor(
+    @inject('UsersRepository')
+    private usersRepository: IUsersRepository,
+    @inject('HashContainer')
+    private hashProvider: IHashProvider,
+  ) {}
+
+  public async execute({ email, password, name }: ICreateUser): Promise<User> {
+    const isEmailExists = await this.usersRepository.findByEmail(email)
 
     if (isEmailExists) {
       throw new AppError('Email address is already registered.')
     }
 
-    const hashedPassword = await hash(password, 10)
+    const hashedPassword = await this.hashProvider.generateHash(password)
 
-    const user = usersRepository.create({
+    const user = await this.usersRepository.create({
       name,
       email,
       password: hashedPassword,
     })
-
-    await usersRepository.save(user)
 
     return user
   }

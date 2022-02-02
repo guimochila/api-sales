@@ -1,5 +1,6 @@
 import { ICreateCustomer } from '@modules/customers/domain/models/ICreateCustomer'
 import { ICustomer } from '@modules/customers/domain/models/ICustomer'
+import { ICustomerPaginate } from '@modules/customers/domain/models/ICustomerPaginate'
 import { ICustomersRepository } from '@modules/customers/domain/repositories/ICustomersRepository'
 import { getRepository, Repository } from 'typeorm'
 import Customer from '../entities/Customer'
@@ -27,6 +28,12 @@ class CustomersRepository implements ICustomersRepository {
     const customer = await this.ormRepo.findOne({ where: { email } })
 
     return customer
+  }
+
+  public async findAllPaginate(): Promise<ICustomerPaginate> {
+    const customers = await this.ormRepo.createQueryBuilder().paginate()
+
+    return customers as ICustomerPaginate
   }
 
   public async create({ name, email }: ICreateCustomer): Promise<Customer> {

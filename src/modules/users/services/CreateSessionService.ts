@@ -1,10 +1,11 @@
 import AppError from '@shared/errors/AppError'
-import { compare } from 'bcryptjs'
 import { sign } from 'jsonwebtoken'
 import { getCustomRepository } from 'typeorm'
 import User from '../infra/typeorm/entities/User'
 import UsersRepository from '../infra/typeorm/repositories/UsersRepository'
 import authConfig from '@config/auth'
+import { inject, injectable } from 'tsyringe'
+import { IHashProvider } from '@shared/providers/HashProvider/models/IHashProvider'
 
 interface IRequest {
   email: string
@@ -16,7 +17,12 @@ interface IResponse {
   token: string
 }
 
+@injectable()
 class CreateSessionService {
+  constructor(
+    @inject('HashProvider')
+    private hashProvider: IHashProvider,
+  ) {}
   public async execute({ email, password }: IRequest): Promise<IResponse> {
     const usersRepository = getCustomRepository(UsersRepository)
     const user = await usersRepository.findByEmail(email)
@@ -25,7 +31,10 @@ class CreateSessionService {
       throw new AppError('Invalid email/password.', 401)
     }
 
-    const isPasswordValid = await compare(password, user.password)
+    const isPasswordValid = await this.hashProvider.compareHash(
+      password,
+      user.password,
+    )
 
     if (!isPasswordValid) {
       throw new AppError('Invalid email/password', 401)
