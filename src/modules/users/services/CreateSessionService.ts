@@ -1,31 +1,25 @@
 import AppError from '@shared/errors/AppError'
 import { sign } from 'jsonwebtoken'
-import { getCustomRepository } from 'typeorm'
-import User from '../infra/typeorm/entities/User'
-import UsersRepository from '../infra/typeorm/repositories/UsersRepository'
 import authConfig from '@config/auth'
 import { inject, injectable } from 'tsyringe'
 import { IHashProvider } from '@shared/providers/HashProvider/models/IHashProvider'
-
-interface IRequest {
-  email: string
-  password: string
-}
-
-interface IResponse {
-  user: User
-  token: string
-}
+import { IUsersRepository } from '../domain/repositories/IUsersRepository'
+import { ICreateSession } from '../domain/models/ICreateSession'
+import { IUserAuthenticated } from '../domain/models/IUserAuthenticated'
 
 @injectable()
 class CreateSessionService {
   constructor(
+    @inject('UsersRepository')
+    private usersRepository: IUsersRepository,
     @inject('HashProvider')
     private hashProvider: IHashProvider,
   ) {}
-  public async execute({ email, password }: IRequest): Promise<IResponse> {
-    const usersRepository = getCustomRepository(UsersRepository)
-    const user = await usersRepository.findByEmail(email)
+  public async execute({
+    email,
+    password,
+  }: ICreateSession): Promise<IUserAuthenticated> {
+    const user = await this.usersRepository.findByEmail(email)
 
     if (!user) {
       throw new AppError('Invalid email/password.', 401)

@@ -3,6 +3,7 @@ import { ICreateCustomer } from '@modules/customers/domain/models/ICreateCustome
 import { ICustomer } from '@modules/customers/domain/models/ICustomer'
 import { ICustomersRepository } from '@modules/customers/domain/repositories/ICustomersRepository'
 import Customer from '@modules/customers/infra/typeorm/entities/Customer'
+import { ICustomerPaginate } from '../../models/ICustomerPaginate'
 
 class MockCustomersRepository
   implements Omit<ICustomersRepository, 'remove' | 'findAll'>
@@ -45,6 +46,21 @@ class MockCustomersRepository
     const customer = this.customers.find(customer => customer.email === email)
 
     return customer
+  }
+
+  public async findAllPaginate(): Promise<ICustomerPaginate> {
+    const customersPaginate: ICustomerPaginate = {
+      from: 1,
+      to: 1,
+      per_page: 1,
+      total: 1,
+      current_page: 1,
+      prev_page: 1,
+      next_page: 1,
+      data: this.customers,
+    }
+
+    return customersPaginate
   }
 }
 

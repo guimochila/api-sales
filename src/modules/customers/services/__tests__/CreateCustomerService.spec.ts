@@ -20,7 +20,7 @@ describe('CreateCustomer', () => {
     expect(customer).toHaveProperty('id')
   })
 
-  it('should not create a new user if email exist', async () => {
+  it('should not create a new customer if email exist', async () => {
     await createCustomer.execute({
       name: 'Testing User',
       email: 'testing@email.com',
