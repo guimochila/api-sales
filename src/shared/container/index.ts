@@ -7,6 +7,8 @@ import UsersRepository from '@modules/users/infra/typeorm/repositories/UsersRepo
 import '../providers/HashProvider'
 import { IUserTokensRepository } from '@modules/users/domain/repositories/IUserTokensRepository'
 import UserTokensRepository from '@modules/users/infra/typeorm/repositories/UserTokensRepository'
+import { IProductsRepository } from '@modules/products/domain/repositories/IProductsRepository'
+import ProductsRepository from '@modules/products/infra/typeorm/repositories/ProductsRepository'
 
 container.registerSingleton<ICustomersRepository>(
   'CustomersRepository',
@@ -19,4 +21,8 @@ container.registerSingleton<IUsersRepository>(
 container.registerSingleton<IUserTokensRepository>(
   'UserTokensRepository',
   UserTokensRepository,
+)
+container.registerSingleton<IProductsRepository>(
+  'ProductsRepository',
+  ProductsRepository,
 )
