@@ -1,11 +1,9 @@
 import redisCache from '@shared/cache/RedisCache'
 import AppError from '@shared/errors/AppError'
 import { inject, injectable } from 'tsyringe'
-import { getCustomRepository } from 'typeorm'
 import { IUpdateProduct } from '../domain/models/IUpdateProduct'
 import { IProductsRepository } from '../domain/repositories/IProductsRepository'
 import Product from '../infra/typeorm/entities/Product'
-import ProductRepository from '../infra/typeorm/repositories/ProductsRepository'
 
 @injectable()
 class UpdateProductService {
