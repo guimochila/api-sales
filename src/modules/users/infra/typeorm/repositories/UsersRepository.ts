@@ -1,7 +1,8 @@
 import { ICreateUser } from '@modules/users/domain/models/ICreateUser'
+import { IPaginateUser } from '@modules/users/domain/models/IPaginateUser'
 import { IUser } from '@modules/users/domain/models/IUser'
 import { IUsersRepository } from '@modules/users/domain/repositories/IUsersRepository'
-import { getRepository, Repository } from 'typeorm'
+import { getRepository, Like, Repository } from 'typeorm'
 import User from '../entities/User'
 
 class UsersRepository implements IUsersRepository {
@@ -9,6 +10,30 @@ class UsersRepository implements IUsersRepository {
 
   constructor() {
     this.ormRepo = getRepository(User)
+  }
+
+  public async findAll(): Promise<IUser[]> {
+    const users = await this.ormRepo.find()
+
+    return users
+  }
+
+  public async findAllPaginate(
+    search: string,
+    sortField: string,
+  ): Promise<IPaginateUser> {
+    if (search) {
+      return (await this.ormRepo
+        .createQueryBuilder()
+        .where([{ name: Like(`%${search}%`) }, { email: Like(`%${search}%`) }])
+        .orderBy(`User.${sortField}`, 'ASC')
+        .paginate()) as IPaginateUser
+    }
+
+    return (await this.ormRepo
+      .createQueryBuilder()
+      .orderBy(`User.${sortField}`, 'ASC')
+      .paginate()) as IPaginateUser
   }
 
   public async create({ name, email, password }: ICreateUser): Promise<IUser> {
